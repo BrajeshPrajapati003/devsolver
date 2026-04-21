@@ -1,5 +1,22 @@
 server:
-    port: 8082
+    port: 8080
 
 # Database configuration
+spring:
+    output:
+        ansi:
+            enabled: always
+    datasource:
+#        url: ${DB_URL:jdbc:postgresql://localhost:5432/devsolver_db}
+#        username: ${DB_USER:devsolver_user}
+#        password: ${DB_PASS:devsolver_pass}
+        url: jdbc:postgresql://localhost:5432/devsolver_db
+        username: devsolver_user
+        password: devsolver_pass
 
+    jpa:
+        hibernate:
+            ddl-auto: update
+        show-sql: true
+
+debug: true

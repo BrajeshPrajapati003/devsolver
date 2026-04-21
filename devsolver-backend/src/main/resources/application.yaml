@@ -1,11 +1,22 @@
-spring:
-  application:
-    name: devsolver-backend
-  profiles:
-    active: dev
-
-
 server:
   port: 8080
 
-# Database configuration
+spring:
+  output:
+    ansi:
+      enabled: always
+  datasource:
+    url: jdbc:postgresql://localhost:5432/devsolver_db
+    username: devsolver_user
+    password: devsolver_pass
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  security:
+    user:
+      name: user
+      password: test@pass

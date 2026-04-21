@@ -1,0 +1,104 @@
+<svg
+  width="320"
+  height="360"
+  viewBox="0 0 320 360"
+  xmlns="http://www.w3.org/2000/svg"
+  fill="none"
+  style="color:#0ea5e9;"
+>
+
+  <!-- ===================== -->
+  <!-- DEFINITIONS -->
+  <!-- ===================== -->
+  <defs>
+    <linearGradient id="edgeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="currentColor"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- ===================== -->
+  <!-- SUBTLY ANIMATED HEXAGON -->
+  <!-- ===================== -->
+  <path
+    d="M160 20
+       L280 90
+       L280 230
+       L160 300
+       L40 230
+       L40 90 Z"
+    stroke="url(#edgeGradient)"
+    stroke-width="5"
+    fill="none"
+    stroke-dasharray="30 12"
+    filter="url(#softGlow)"
+  >
+    <!-- Very subtle boundary flow -->
+    <animate
+      attributeName="stroke-dashoffset"
+      from="0"
+      to="42"
+      dur="6s"
+      repeatCount="indefinite"
+    />
+    <!-- Gentle pulse -->
+    <animate
+      attributeName="stroke-opacity"
+      values="0.7;1;0.7"
+      dur="4s"
+      repeatCount="indefinite"
+    />
+  </path>
+
+  <!-- ===================== -->
+  <!-- STATIC INNER CIRCLE -->
+  <!-- ===================== -->
+  <circle
+    cx="160"
+    cy="160"
+    r="54"
+    stroke="url(#edgeGradient)"
+    stroke-width="3"
+    opacity="0.85"
+  />
+
+  <!-- ===================== -->
+  <!-- STATIC CODING SYMBOL -->
+  <!-- ===================== -->
+  <text
+    x="160"
+    y="178"
+    text-anchor="middle"
+    font-size="64"
+    font-family="Consolas, Monaco, monospace"
+    font-weight="700"
+    fill="url(#edgeGradient)"
+  >
+    &lt;/&gt;
+  </text>
+
+  <!-- ===================== -->
+  <!-- BRAND NAME -->
+  <!-- ===================== -->
+  <text
+    x="160"
+    y="345"
+    text-anchor="middle"
+    font-size="28"
+    font-family="Segoe UI, Inter, sans-serif"
+    font-weight="600"
+    letter-spacing="1"
+    fill="currentColor"
+  >
+    DevSolver
+  </text>
+
+</svg>

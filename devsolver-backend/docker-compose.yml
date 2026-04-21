@@ -1,0 +1,27 @@
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: devsolver-postgres
+    restart: always
+
+    environment:
+      - TZ=Asia/Kolkata
+      - POSTGRES_DB=devsolver_db
+      - POSTGRES_USER=devsolver_user
+      - POSTGRES_PASSWORD=devsolver_pass
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    networks:
+      - devsolver-network
+
+volumes:
+  postgres_data:
+
+networks:
+  devsolver-network:
