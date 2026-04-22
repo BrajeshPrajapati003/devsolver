@@ -1,9 +1,6 @@
 package com.major.devsolver_backend.controller;
 
-import com.major.devsolver_backend.dto.LoginRequest;
-import com.major.devsolver_backend.dto.LoginResponse;
-import com.major.devsolver_backend.dto.RegisterRequest;
-import com.major.devsolver_backend.dto.UserResponse;
+import com.major.devsolver_backend.dto.*;
 import com.major.devsolver_backend.entity.User;
 import com.major.devsolver_backend.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -31,18 +28,18 @@ public class AuthController {
     // Tight coupling -> you are exposing your internal entity structure directly.
     // If you change db fields -> api breaks
     @PostMapping("/register")
-    public ResponseEntity<UserResponse> register(
+    public ResponseEntity<RegisterResponse> register(
             @RequestBody RegisterRequest req
     ){
-        User savedUser = authService.register(req);
+//        User savedUser = authService.register(req);
+//
+//        UserResponse res = UserResponse.builder()
+//                .id(savedUser.getId())
+//                .username(savedUser.getUsername())
+//                .email(savedUser.getEmail())
+//                .build();
 
-        UserResponse res = UserResponse.builder()
-                .id(savedUser.getId())
-                .username(savedUser.getUsername())
-                .email(savedUser.getEmail())
-                .build();
-
-        return ResponseEntity.ok(res);
+        return ResponseEntity.ok(authService.register(req));
     }
 
 
@@ -50,14 +47,14 @@ public class AuthController {
     public ResponseEntity<LoginResponse> login(
             @RequestBody LoginRequest request
     ){
-        User user = authService.login(request);
+//        User user = authService.login(request);
+//
+//        LoginResponse res = LoginResponse.builder()
+//                .message("Login successful")
+//                .username(user.getUsername())
+//                .email(user.getEmail())
+//                .build();
 
-        LoginResponse res = LoginResponse.builder()
-                .message("Login successful")
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .build();
-
-        return ResponseEntity.ok(res);
+        return ResponseEntity.ok(authService.login(request));
     }
  }

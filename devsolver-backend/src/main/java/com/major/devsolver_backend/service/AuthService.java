@@ -1,9 +1,12 @@
 package com.major.devsolver_backend.service;
 
 import com.major.devsolver_backend.dto.LoginRequest;
+import com.major.devsolver_backend.dto.LoginResponse;
 import com.major.devsolver_backend.dto.RegisterRequest;
+import com.major.devsolver_backend.dto.RegisterResponse;
 import com.major.devsolver_backend.entity.User;
 import com.major.devsolver_backend.repository.UserRepository;
+import com.major.devsolver_backend.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,8 +17,9 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
-    public User register(RegisterRequest req){
+    public RegisterResponse register(RegisterRequest req){
 
         // 1. validate
         if (userRepository.findByEmail(req.email()).isPresent()){
@@ -25,10 +29,12 @@ public class AuthService {
         User user = mapToUser(req);
 
         // 3. save
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+
+        return mapToRegisterResponse(savedUser);
     }
 
-    public User login(LoginRequest req){
+    public LoginResponse login(LoginRequest req){
 
         User user = userRepository.findByEmail(req.email())
                 .orElseThrow(()-> new RuntimeException("User not found!"));
@@ -37,7 +43,15 @@ public class AuthService {
             throw new RuntimeException("Invalid password!");
         }
 
-        return user;
+        String token = jwtUtil.generateToken(user.getEmail());
+
+        // map to LoginResponseDto
+        return LoginResponse.builder()
+                .token(token)
+                .message("Login Successful!")
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .build();
     }
 
     private User mapToUser(RegisterRequest req){
@@ -45,6 +59,14 @@ public class AuthService {
                 .username(req.username())
                 .email(req.email())
                 .password(passwordEncoder.encode(req.password()))
+                .build();
+    }
+
+    private RegisterResponse mapToRegisterResponse(User user){
+        return RegisterResponse.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .email(user.getEmail())
                 .build();
     }
 }
