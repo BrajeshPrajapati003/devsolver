@@ -4,9 +4,9 @@ import com.major.devsolver_backend.dto.PostRequest;
 import com.major.devsolver_backend.dto.PostResponse;
 import com.major.devsolver_backend.entity.Post;
 import com.major.devsolver_backend.entity.User;
+import com.major.devsolver_backend.exception.NotFoundException;
+import com.major.devsolver_backend.exception.UnauthorizedException;
 import com.major.devsolver_backend.repository.PostRepository;
-import com.major.devsolver_backend.repository.TagRepository;
-import com.major.devsolver_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,18 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostService {
 
-//    createPost()
-//    updatePost()
-//    deletePost()
-//    getPostById()
-//    getAllPosts()
-//    searchPosts()
-
-
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
-    private final TagRepository tagRepository;
-
 
     // Create post
     public PostResponse createPost(PostRequest dto){
@@ -52,11 +41,11 @@ public class PostService {
         User user = (User) auth.getPrincipal();
 
         Post post = postRepository.findById(postId)
-                .orElseThrow(()-> new RuntimeException("Post not found!"));
+                .orElseThrow(()-> new NotFoundException("Post not found!"));
 
         // ownership check
         if (!post.getUser().getId().equals(user.getId())){
-            throw new RuntimeException("Unauthorized Operation done...");
+            throw new UnauthorizedException("Unauthorized Operation done...");
         }
 
         // update fields (only if provided)
@@ -82,14 +71,23 @@ public class PostService {
         User user = (User) auth.getPrincipal();
 
         Post post = postRepository.findById(postId)
-                .orElseThrow(()-> new RuntimeException("Post not found!"));
+                .orElseThrow(()-> new NotFoundException("Post not found!"));
 
         // ownership check
         if (!post.getUser().getId().equals(user.getId())){
-            throw new RuntimeException("You're not allowed to delete this post!");
+            throw new UnauthorizedException("You're not allowed to delete this post!");
         }
 
         postRepository.delete(post);
+    }
+
+    // Get post by post id
+    public PostResponse getPostById(Long postId){
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(()-> new NotFoundException("Post not found!"));
+
+        return mapToPostResponse(post);
     }
 
 
@@ -99,6 +97,14 @@ public class PostService {
                 .map(this::mapToPostResponse).toList();
     }
 
+    // Get posts by user id (filter use-case)
+    public List<PostResponse> getPostsByUserId(Long userId){
+
+        return postRepository.findByUserId(userId)
+                .stream()
+                .map(this::mapToPostResponse)
+                .toList();
+    }
 
 
     // Private helper

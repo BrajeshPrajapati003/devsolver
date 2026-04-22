@@ -5,6 +5,9 @@ import com.major.devsolver_backend.dto.LoginResponse;
 import com.major.devsolver_backend.dto.RegisterRequest;
 import com.major.devsolver_backend.dto.RegisterResponse;
 import com.major.devsolver_backend.entity.User;
+import com.major.devsolver_backend.exception.ConflictException;
+import com.major.devsolver_backend.exception.InvalidCredentialsException;
+import com.major.devsolver_backend.exception.NotFoundException;
 import com.major.devsolver_backend.repository.UserRepository;
 import com.major.devsolver_backend.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +26,7 @@ public class AuthService {
 
         // 1. validate
         if (userRepository.findByEmail(req.email()).isPresent()){
-            throw new RuntimeException("User already exists");
+            throw new ConflictException("User already exists"); // conflict - 409 error
         }
 
         User user = mapToUser(req);
@@ -37,10 +40,10 @@ public class AuthService {
     public LoginResponse login(LoginRequest req){
 
         User user = userRepository.findByEmail(req.email())
-                .orElseThrow(()-> new RuntimeException("User not found!"));
+                .orElseThrow(()-> new NotFoundException("User not found!")); // Resource Not Found - 404 error
 
         if (!passwordEncoder.matches(req.password(), user.getPassword())){
-            throw new RuntimeException("Invalid password!");
+            throw new InvalidCredentialsException("Invalid password!"); //
         }
 
         String token = jwtUtil.generateToken(user.getEmail());
