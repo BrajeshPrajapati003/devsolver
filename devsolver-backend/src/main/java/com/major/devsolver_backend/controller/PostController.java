@@ -4,6 +4,10 @@ import com.major.devsolver_backend.dto.PostRequest;
 import com.major.devsolver_backend.dto.PostResponse;
 import com.major.devsolver_backend.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,9 +27,20 @@ public class PostController {
     }
 
     // get all posts
+//    @GetMapping
+//    public ResponseEntity<List<PostResponse>> getAllPosts(){
+//        return ResponseEntity.ok(postService.getAllPosts());
+//    }
+
     @GetMapping
-    public ResponseEntity<List<PostResponse>> getAllPosts(){
-        return ResponseEntity.ok(postService.getAllPosts());
+    public ResponseEntity<Page<PostResponse>> getAllPosts(
+            @PageableDefault(
+                    size = 10,
+                    sort = "createdAt",
+                    direction = Sort.Direction.DESC
+            ) Pageable pageable
+    ){
+        return ResponseEntity.ok(postService.getAllPosts(pageable));
     }
 
     // get post by id

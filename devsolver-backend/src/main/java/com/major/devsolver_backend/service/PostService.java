@@ -8,6 +8,8 @@ import com.major.devsolver_backend.exception.NotFoundException;
 import com.major.devsolver_backend.exception.UnauthorizedException;
 import com.major.devsolver_backend.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -92,9 +94,16 @@ public class PostService {
 
 
     // Get all posts
-    public List<PostResponse> getAllPosts(){
-        return postRepository.findAll().stream()
-                .map(this::mapToPostResponse).toList();
+//    public List<PostResponse> getAllPosts(){
+//        return postRepository.findAll().stream()
+//                .map(this::mapToPostResponse).toList();
+//    }
+
+    // Get all posts with pagination
+    public Page<PostResponse> getAllPosts(Pageable pageable){
+
+        return postRepository.findAll(pageable)
+                .map(this::mapToPostResponse);
     }
 
     // Get posts by user id (filter use-case)
