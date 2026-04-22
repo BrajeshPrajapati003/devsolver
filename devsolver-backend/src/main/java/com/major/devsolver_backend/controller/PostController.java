@@ -2,12 +2,15 @@ package com.major.devsolver_backend.controller;
 
 import com.major.devsolver_backend.dto.PostRequest;
 import com.major.devsolver_backend.dto.PostResponse;
+import com.major.devsolver_backend.entity.Post;
+import com.major.devsolver_backend.entity.User;
 import com.major.devsolver_backend.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -31,15 +34,38 @@ public class PostController {
 
     private final PostService postService;
 
-    @PostMapping
-    public ResponseEntity<PostResponse> createPost(
-            @RequestBody PostRequest dto,
-            Principal principal
-            ){
+//    @PostMapping
+//    public ResponseEntity<PostResponse> createPost(
+//            @RequestBody PostRequest dto,
+//            Principal principal
+//            ){
+//
+//        return ResponseEntity.ok(
+//                postService.createPost(dto, principal.getName())
+//        );
+//    }
 
-        return ResponseEntity.ok(
-                postService.createPost(dto, principal.getName())
-        );
+    @PostMapping
+    public ResponseEntity<PostResponse> createPost(@RequestBody PostRequest dto){
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+
+        return ResponseEntity.ok(postService.createPost(dto));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<PostResponse> updatePost(
+            @PathVariable Long id,
+            @RequestBody PostRequest dto
+    ){
+        return ResponseEntity.ok(postService.updatePost(id, dto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletePost(@PathVariable Long id){
+        postService.deletePost(id);
+        return ResponseEntity.ok("Post deleted successfully!");
     }
 
     @GetMapping

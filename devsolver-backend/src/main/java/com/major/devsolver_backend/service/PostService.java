@@ -8,6 +8,8 @@ import com.major.devsolver_backend.repository.PostRepository;
 import com.major.devsolver_backend.repository.TagRepository;
 import com.major.devsolver_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,15 +32,64 @@ public class PostService {
 
 
     // Create post
-    public PostResponse createPost(PostRequest dto, String userEmail){
+    public PostResponse createPost(PostRequest dto){
 
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(()-> new RuntimeException("User not found!"));
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
 
         Post post = mapToPost(dto, user);
         Post savedPost = postRepository.save(post);
 
         return mapToPostResponse(savedPost);
+    }
+
+
+    // Only author can update/delete post
+
+    // update post
+    public PostResponse updatePost(Long postId, PostRequest dto){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(()-> new RuntimeException("Post not found!"));
+
+        // ownership check
+        if (!post.getUser().getId().equals(user.getId())){
+            throw new RuntimeException("Unauthorized Operation done...");
+        }
+
+        // update fields (only if provided)
+        if (dto.title() != null){
+            post.setTitle(dto.title());
+        }
+
+        if (dto.content() != null){
+            post.setContent(dto.content());
+        }
+
+        // TODO: tags later when implemented properly
+
+        Post updatedPost = postRepository.save(post);
+
+        return mapToPostResponse(updatedPost);
+    }
+
+
+    // Delete post
+    public void deletePost(Long postId){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(()-> new RuntimeException("Post not found!"));
+
+        // ownership check
+        if (!post.getUser().getId().equals(user.getId())){
+            throw new RuntimeException("You're not allowed to delete this post!");
+        }
+
+        postRepository.delete(post);
     }
 
 
