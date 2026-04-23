@@ -1,13 +1,24 @@
 package com.major.devsolver_backend.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.major.devsolver_backend.entity.enums.VoteType;
+import com.major.devsolver_backend.service.VoteService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/posts")
+@RequestMapping("/api/posts/{postId}/vote")
+@RequiredArgsConstructor
 public class VoteController {
 
-//    POST   /api/posts/{id}/upvote
-//    POST   /api/posts/{id}/remove-vote
+    private final VoteService voteService;
+
+    @PostMapping
+    public ResponseEntity<String> vote(
+            @PathVariable Long postId,
+            @RequestParam VoteType type
+            ){
+        return ResponseEntity.ok(voteService.vote(postId, type));
+    }
 
 }

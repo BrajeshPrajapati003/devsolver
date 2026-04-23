@@ -44,6 +44,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleGeneral(Exception ex){
+
+        ex.printStackTrace();
         return ResponseEntity.status(500).body(
                 Map.of("error", "Something went wrong")
         );
