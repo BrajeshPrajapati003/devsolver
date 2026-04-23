@@ -48,4 +48,9 @@ public class GlobalExceptionHandler {
                 Map.of("error", "Something went wrong")
         );
     }
+
+//    @ExceptionHandler(Exception.class)
+//    public void handleGeneralExceptionForTesting(Exception ex){
+//        ex.printStackTrace();
+//    }
 }
