@@ -6,6 +6,7 @@ import com.major.devsolver_backend.entity.Comment;
 import com.major.devsolver_backend.entity.Post;
 import com.major.devsolver_backend.entity.User;
 import com.major.devsolver_backend.exception.NotFoundException;
+import com.major.devsolver_backend.exception.UnauthorizedException;
 import com.major.devsolver_backend.repository.CommentRepository;
 import com.major.devsolver_backend.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +41,21 @@ public class CommentService {
         Comment saved = commentRepository.save(comment);
 
         return mapToCommentResponse(saved);
+    }
+
+    // Delete comment
+    public void deleteComment(Long commentId){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(()-> new NotFoundException("Comment not found!"));
+
+        if (!comment.getUser().getId().equals(user.getId())){
+            throw new UnauthorizedException("You cannot delete this comment!");
+        }
+
+        commentRepository.save(comment);
     }
 
     // Get comments for post
