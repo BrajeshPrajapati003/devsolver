@@ -3,7 +3,7 @@ package com.major.devsolver_backend.dto;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -13,7 +13,7 @@ public class PostResponse {
     private String title;
     private String content;
     private String author;
-    private List<String> tags;
+    private Set<String> tags;
 
     private Long upvotes;
     private Long downvotes;

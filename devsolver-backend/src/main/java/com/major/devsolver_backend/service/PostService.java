@@ -3,11 +3,13 @@ package com.major.devsolver_backend.service;
 import com.major.devsolver_backend.dto.PostRequest;
 import com.major.devsolver_backend.dto.PostResponse;
 import com.major.devsolver_backend.entity.Post;
+import com.major.devsolver_backend.entity.Tag;
 import com.major.devsolver_backend.entity.User;
 import com.major.devsolver_backend.entity.enums.VoteType;
 import com.major.devsolver_backend.exception.NotFoundException;
 import com.major.devsolver_backend.exception.UnauthorizedException;
 import com.major.devsolver_backend.repository.PostRepository;
+import com.major.devsolver_backend.repository.TagRepository;
 import com.major.devsolver_backend.repository.VoteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,7 +18,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,26 +29,41 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final VoteRepository voteRepository;
+    private final TagRepository tagRepository;
 
     // Create post
     public PostResponse createPost(PostRequest dto){
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) auth.getPrincipal();
+        User user = getAuthenticatedUser();
 
-        Post post = mapToPost(dto, user);
+        Set<Tag> tags = dto.tags() == null ? new HashSet<>() :
+                dto.tags().stream()
+                        .map(tagName -> {
+                            String normalized = tagName.toLowerCase().trim(); // normalize tags (JAVA = java = JaVa)
+
+                            return tagRepository.findByName(normalized)
+                                    .orElseGet(()-> tagRepository.save(
+                                            Tag.builder().name(normalized).build()
+                                    ));
+                        })
+                        .collect(Collectors.toSet());
+
+        Post post = Post.builder()
+                .title(dto.title())
+                .content(dto.content())
+                .user(user)
+                .tags(tags)
+                .build();
         Post savedPost = postRepository.save(post);
 
         return mapToPostResponse(savedPost);
     }
 
 
-    // Only author can update/delete post
-
     // update post
     public PostResponse updatePost(Long postId, PostRequest dto){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) auth.getPrincipal();
+
+        User user = getAuthenticatedUser();
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(()-> new NotFoundException("Post not found!"));
@@ -62,7 +82,21 @@ public class PostService {
             post.setContent(dto.content());
         }
 
-        // TODO: tags later when implemented properly
+        if (dto.tags() != null){
+
+            Set<Tag> tags = dto.tags().stream()
+                    .map(tagName -> {
+                        String normalized = tagName.toLowerCase().trim();
+
+                        return tagRepository.findByName(normalized)
+                                .orElseGet(()-> tagRepository.save(
+                                        Tag.builder().name(normalized).build()
+                                ));
+                    })
+                    .collect(Collectors.toSet());
+
+            post.setTags(tags);
+        }
 
         Post updatedPost = postRepository.save(post);
 
@@ -72,8 +106,8 @@ public class PostService {
 
     // Delete post
     public void deletePost(Long postId){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) auth.getPrincipal();
+
+        User user = getAuthenticatedUser();
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(()-> new NotFoundException("Post not found!"));
@@ -96,12 +130,6 @@ public class PostService {
     }
 
 
-    // Get all posts
-//    public List<PostResponse> getAllPosts(){
-//        return postRepository.findAll().stream()
-//                .map(this::mapToPostResponse).toList();
-//    }
-
     // Get all posts with pagination
     public Page<PostResponse> getAllPosts(Pageable pageable){
 
@@ -110,22 +138,17 @@ public class PostService {
     }
 
     // Get posts by user id (filter use-case)
-    public List<PostResponse> getPostsByUserId(Long userId){
+    public Page<PostResponse> getPostsByUserId(Long userId, Pageable pageable){
 
-        return postRepository.findByUserId(userId)
-                .stream()
-                .map(this::mapToPostResponse)
-                .toList();
+        return postRepository.findByUserId(userId, pageable)
+                .map(this::mapToPostResponse);
     }
 
+    // GET posts by tag
+    public Page<PostResponse> getPostsByTag(String tag, Pageable pageable){
 
-    // Private helper
-    private Post mapToPost(PostRequest request, User user){
-        return Post.builder()
-                .title(request.title())
-                .content(request.content())
-                .user(user)
-                .build();
+        return postRepository.findByTags_Name(tag.toLowerCase(), pageable)
+                .map(this::mapToPostResponse);
     }
 
     // private helper
@@ -137,6 +160,11 @@ public class PostService {
         // For each post -> 2 DB queries (up + down) = bad for large scale
         // Optimize it with JOIN / aggregation query
 
+        Set<String> tagNames = post.getTags() == null ? Set.of() :
+                post.getTags().stream()
+                        .map(Tag::getName)
+                        .collect(Collectors.toSet());
+
         return PostResponse.builder()
                 .id(post.getId())
                 .title(post.getTitle())
@@ -144,7 +172,16 @@ public class PostService {
                 .author(post.getUser().getUsername())
                 .upvotes(upvotes)
                 .downvotes(downvotes)
-                // .tags(...) -> add later when relation is implemented
+                 .tags(tagNames)
                 .build();
+    }
+
+    private User getAuthenticatedUser(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || auth.getPrincipal().equals("anonymousUser")) {
+            throw new RuntimeException("User not authenticated");
+        }
+
+        return (User) auth.getPrincipal();
     }
 }

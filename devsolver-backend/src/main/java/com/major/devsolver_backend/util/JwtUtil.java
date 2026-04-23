@@ -11,9 +11,10 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    private final String SECRET = "your_super_secret_key_which_is_very_long_123456789";
+    private final String SECRET = "your_super_secret_key_which_is_very_long_123456789_very_secure_key_123456";
 
     public String generateToken(String email){
+
         return Jwts.builder()
                 .subject(email)
                 .issuedAt(new Date())

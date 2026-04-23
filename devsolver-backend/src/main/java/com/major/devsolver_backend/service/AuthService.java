@@ -1,13 +1,9 @@
 package com.major.devsolver_backend.service;
 
-import com.major.devsolver_backend.dto.LoginRequest;
-import com.major.devsolver_backend.dto.LoginResponse;
-import com.major.devsolver_backend.dto.RegisterRequest;
-import com.major.devsolver_backend.dto.RegisterResponse;
+import com.major.devsolver_backend.dto.*;
 import com.major.devsolver_backend.entity.User;
 import com.major.devsolver_backend.exception.ConflictException;
 import com.major.devsolver_backend.exception.InvalidCredentialsException;
-import com.major.devsolver_backend.exception.NotFoundException;
 import com.major.devsolver_backend.repository.UserRepository;
 import com.major.devsolver_backend.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +20,10 @@ public class AuthService {
 
     public RegisterResponse register(RegisterRequest req){
 
+        String email = req.email().trim().toLowerCase();
+
         // 1. validate
-        if (userRepository.findByEmail(req.email()).isPresent()){
+        if (userRepository.findByEmail(email).isPresent()){
             throw new ConflictException("User already exists"); // conflict - 409 error
         }
 
@@ -39,28 +37,40 @@ public class AuthService {
 
     public LoginResponse login(LoginRequest req){
 
-        User user = userRepository.findByEmail(req.email())
-                .orElseThrow(()-> new NotFoundException("User not found!")); // Resource Not Found - 404 error
+        // Login should never reveal whether user exists
+        // otherwise: Attacker can probe emails -> user enumeration
+        // Final behavior: to be secure
+            // Wrong email -> same error
+            // Wrong password -> same error
+
+        String email = req.email().trim().toLowerCase();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(()-> new InvalidCredentialsException("Invalid email or password!"));
 
         if (!passwordEncoder.matches(req.password(), user.getPassword())){
-            throw new InvalidCredentialsException("Invalid password!"); //
+            throw new InvalidCredentialsException("Invalid email or password!"); //
         }
 
-        String token = jwtUtil.generateToken(user.getEmail());
+        String token = jwtUtil.generateToken(email);
 
-        // map to LoginResponseDto
+        // map to LoginResponse
         return LoginResponse.builder()
                 .token(token)
                 .message("Login Successful!")
-                .username(user.getUsername())
-                .email(user.getEmail())
+                .user(UserResponse.builder()
+                        .username(user.getUsername())
+                        .email(user.getEmail())
+                        .id(user.getId())
+                        .bio(user.getBio())
+                        .build())
                 .build();
     }
 
     private User mapToUser(RegisterRequest req){
         return User.builder()
                 .username(req.username())
-                .email(req.email())
+                .email(req.email().trim().toLowerCase())
                 .password(passwordEncoder.encode(req.password()))
                 .build();
     }

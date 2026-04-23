@@ -1,10 +1,10 @@
 package com.major.devsolver_backend.dto;
 
-import java.util.List;
+import java.util.Set;
 
 public record PostRequest(
         String title,
         String content,
-        List<String> tags
+        Set<String> tags
 ) {
 }

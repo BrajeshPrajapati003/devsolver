@@ -16,16 +16,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class VoteService {
 
-    // add, delete, toggle vote
-    // get vote count
-
     private final VoteRepository voteRepository;
     private final PostRepository postRepository;
 
     public String vote(Long postId, VoteType type){
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) auth.getPrincipal();
+        User user = getAuthenticatedUser();
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(()-> new NotFoundException("Post not found!"));
@@ -54,6 +50,15 @@ public class VoteService {
 
         voteRepository.save(newVote);
         return "Vote added!";
+    }
+
+    private User getAuthenticatedUser(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || auth.getPrincipal().equals("anonymousUser")) {
+            throw new RuntimeException("User not authenticated");
+        }
+
+        return (User) auth.getPrincipal();
     }
 
 }

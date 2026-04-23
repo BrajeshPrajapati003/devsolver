@@ -1,8 +1,8 @@
 package com.major.devsolver_backend.controller;
 
 import com.major.devsolver_backend.dto.*;
-import com.major.devsolver_backend.entity.User;
 import com.major.devsolver_backend.service.AuthService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,12 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
 
-    // register endpoint - POST
-
-    // login endpoint - POST
-
-    // me endpoint - GET
-
     private final AuthService authService;
 
     // never return ResponseEntity<User> because you might expose sensitive data
@@ -29,15 +23,8 @@ public class AuthController {
     // If you change db fields -> api breaks
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> register(
-            @RequestBody RegisterRequest req
+            @Valid @RequestBody RegisterRequest req
     ){
-//        User savedUser = authService.register(req);
-//
-//        UserResponse res = UserResponse.builder()
-//                .id(savedUser.getId())
-//                .username(savedUser.getUsername())
-//                .email(savedUser.getEmail())
-//                .build();
 
         return ResponseEntity.ok(authService.register(req));
     }
@@ -45,15 +32,8 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(
-            @RequestBody LoginRequest request
+            @Valid @RequestBody LoginRequest request
     ){
-//        User user = authService.login(request);
-//
-//        LoginResponse res = LoginResponse.builder()
-//                .message("Login successful")
-//                .username(user.getUsername())
-//                .email(user.getEmail())
-//                .build();
 
         return ResponseEntity.ok(authService.login(request));
     }

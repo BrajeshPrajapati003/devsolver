@@ -9,6 +9,8 @@ import com.major.devsolver_backend.exception.NotFoundException;
 import com.major.devsolver_backend.repository.PostRepository;
 import com.major.devsolver_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -22,28 +24,25 @@ public class UserService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
 
+    // current user
     public UserResponse getCurrentUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) auth.getPrincipal();
 
-        return mapToUserResponse(user);
+        return mapToUserResponse(getAuthenticatedUser());
     }
 
+    // update profile
     public UserResponse updateProfile(UserRequest dto){
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) auth.getPrincipal();
+        User user = getAuthenticatedUser();
 
         if (dto.username() != null){
             user.setUsername(dto.username());
         }
-
         if (dto.bio() != null){
             user.setBio(dto.bio());
         }
 
-        User updatedUser = userRepository.save(user);
-        return mapToUserResponse(updatedUser);
+        return mapToUserResponse(userRepository.save(user));
     }
 
     // get user by id
@@ -55,26 +54,28 @@ public class UserService {
     }
 
 
-    // get posts by id
-    public List<PostResponse> getPostsByUserId(Long userId){
-        return postRepository.findByUserId(userId)
-                .stream()
-                .map(this::mapToPostResponse)
-                .toList();
+    // posts by user id
+    public Page<PostResponse> getPostsByUserId(Long userId, Pageable pageable){
+
+        userRepository.findById(userId)
+                .orElseThrow(()-> new NotFoundException("User not found!"));
+
+        return postRepository.findByUserId(userId, pageable)
+                .map(this::mapToPostResponse);
     }
 
-    // get current user posts
-    public List<PostResponse> getMyPosts(){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) auth.getPrincipal();
+    // my posts
+    public Page<PostResponse> getMyPosts(Pageable pageable){
 
-        return postRepository.findByUserId(user.getId())
-                .stream()
-                .map(this::mapToPostResponse)
-                .toList();
+        User user = getAuthenticatedUser();
+
+        return postRepository.findByUserId(user.getId(), pageable)
+                .map(this::mapToPostResponse);
     }
 
+    //---------- helpers ---------------
     private UserResponse mapToUserResponse(User user){
+
         return UserResponse.builder()
                 .id(user.getId())
                 .email(user.getEmail())
@@ -91,5 +92,14 @@ public class UserService {
                 .content(post.getContent())
                 .author(post.getUser().getUsername())
                 .build();
+    }
+
+    private User getAuthenticatedUser(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || auth.getPrincipal().equals("anonymousUser")) {
+            throw new RuntimeException("User not authenticated");
+        }
+
+        return (User) auth.getPrincipal();
     }
 }

@@ -3,6 +3,7 @@ package com.major.devsolver_backend.controller;
 import com.major.devsolver_backend.dto.PostRequest;
 import com.major.devsolver_backend.dto.PostResponse;
 import com.major.devsolver_backend.service.PostService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,8 +12,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/posts")
 @RequiredArgsConstructor
@@ -20,60 +19,56 @@ public class PostController {
 
     private final PostService postService;
 
-    // create post
+    // create
     @PostMapping
-    public ResponseEntity<PostResponse> createPost(@RequestBody PostRequest dto){
+    public ResponseEntity<PostResponse> createPost(@Valid @RequestBody PostRequest dto){
         return ResponseEntity.ok(postService.createPost(dto));
     }
 
-    // get all posts
-//    @GetMapping
-//    public ResponseEntity<List<PostResponse>> getAllPosts(){
-//        return ResponseEntity.ok(postService.getAllPosts());
-//    }
 
+    // Get (pagination + filtering)
     @GetMapping
-    public ResponseEntity<Page<PostResponse>> getAllPosts(
+    public ResponseEntity<Page<PostResponse>> getPosts(
+            @RequestParam(required = false) Long userId, // filter by user id
+            @RequestParam(required = false) String tag, // filter by tag
             @PageableDefault(
                     size = 10,
                     sort = "createdAt",
                     direction = Sort.Direction.DESC
             ) Pageable pageable
     ){
+
+        if (userId != null){
+            return ResponseEntity.ok(postService.getPostsByUserId(userId, pageable));
+        }
+
+        if (tag != null){
+            return ResponseEntity.ok(postService.getPostsByTag(tag, pageable));
+        }
+
         return ResponseEntity.ok(postService.getAllPosts(pageable));
     }
 
-    // get post by id
+    // get by id
     @GetMapping("/{id}")
     public ResponseEntity<PostResponse> getPostById(@PathVariable Long id){
         return ResponseEntity.ok(postService.getPostById(id));
     }
 
-    // update post (only owner)
+    // update (only owner)
     @PutMapping("/{id}")
     public ResponseEntity<PostResponse> updatePost(
             @PathVariable Long id,
-            @RequestBody PostRequest dto
+            @Valid @RequestBody PostRequest dto
     ){
         return ResponseEntity.ok(postService.updatePost(id, dto));
     }
 
-    // delete post (only owner)
+    // delete (only owner)
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletePost(@PathVariable Long id){
+    public ResponseEntity<String> deletePost(@PathVariable Long id){
         postService.deletePost(id);
         return ResponseEntity.ok("Post deleted successfully!");
     }
 
-    // filter posts by user (scalable)
-    @GetMapping("/by-user/{userId}")
-    public ResponseEntity<List<PostResponse>> getPostsByUserId(@PathVariable Long userId){
-        return ResponseEntity.ok(postService.getPostsByUserId(userId));
-    }
-
-    // filtering + search
-//    GET /api/posts?tag=SpringBoot
-//    GET /api/posts?search=jwt+error
-//    GET /api/posts?sort=top
-//    GET /api/posts?page=1&size=10
 }
