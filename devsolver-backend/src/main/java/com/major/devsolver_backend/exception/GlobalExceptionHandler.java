@@ -42,10 +42,16 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(MissingPathVariableException.class)
+    public ResponseEntity<?> handleMissingPathVariable(MissingPathVariableException ex){
+
+        return ResponseEntity.badRequest().body("Missing parameter!");
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleGeneral(Exception ex){
 
-        ex.printStackTrace();
+//        ex.printStackTrace();
         return ResponseEntity.status(500).body(
                 Map.of("error", "Something went wrong")
         );

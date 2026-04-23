@@ -4,9 +4,11 @@ import com.major.devsolver_backend.dto.PostRequest;
 import com.major.devsolver_backend.dto.PostResponse;
 import com.major.devsolver_backend.entity.Post;
 import com.major.devsolver_backend.entity.User;
+import com.major.devsolver_backend.entity.enums.VoteType;
 import com.major.devsolver_backend.exception.NotFoundException;
 import com.major.devsolver_backend.exception.UnauthorizedException;
 import com.major.devsolver_backend.repository.PostRepository;
+import com.major.devsolver_backend.repository.VoteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +23,7 @@ import java.util.List;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final VoteRepository voteRepository;
 
     // Create post
     public PostResponse createPost(PostRequest dto){
@@ -127,11 +130,20 @@ public class PostService {
 
     // private helper
     private PostResponse mapToPostResponse(Post post){
+
+        Long upvotes = voteRepository.countByPostIdAndType(post.getId(), VoteType.UPVOTE);
+        Long downvotes = voteRepository.countByPostIdAndType(post.getId(), VoteType.DOWNVOTE);
+
+        // For each post -> 2 DB queries (up + down) = bad for large scale
+        // Optimize it with JOIN / aggregation query
+
         return PostResponse.builder()
                 .id(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .author(post.getUser().getUsername())
+                .upvotes(upvotes)
+                .downvotes(downvotes)
                 // .tags(...) -> add later when relation is implemented
                 .build();
     }

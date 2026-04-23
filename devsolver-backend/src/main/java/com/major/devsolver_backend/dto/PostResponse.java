@@ -15,4 +15,6 @@ public class PostResponse {
     private String author;
     private List<String> tags;
 
+    private Long upvotes;
+    private Long downvotes;
 }
