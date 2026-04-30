@@ -88,6 +88,26 @@ DevSolver is designed with real-world backend architecture principles:
 
 ---
 
+## 🏗️ Architecture
+
+```text
+
+                ┌───────────────┐
+                │   User Module │
+                └──────┬────────┘
+                       │
+        ┌──────────────┼──────────────┐
+        ▼              ▼              ▼
+   Post Module    Comment Module   Auth Module
+        │              │              │
+        ▼              ▼              ▼
+   Tag System      Voting System   JWT Security
+        │              │
+        ▼              ▼
+   Bookmark System   Pagination
+
+```
+
 ## 📊 API Design Highlights
 
 - RESTful endpoint structure (/api/...)
