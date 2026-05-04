@@ -24,6 +24,10 @@ spring:
         default-page-size: 10
         max-page-size: 50
 
+  web:
+    resources:
+      static-locations: file:uploads/
+
   security:
     user:
       name: user

@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -65,5 +66,11 @@ public class UserController {
             ) Pageable pageable
     ){
         return ResponseEntity.ok(userService.getMyPosts(pageable));
+    }
+
+    // Avatar
+    @PostMapping("/me/avatar")
+    public ResponseEntity<String> uploadAvatar(@RequestParam("file") MultipartFile file){
+        return ResponseEntity.ok(userService.updateAvatar(file));
     }
 }

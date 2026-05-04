@@ -5,6 +5,7 @@ import com.major.devsolver_backend.dto.UserRequest;
 import com.major.devsolver_backend.dto.UserResponse;
 import com.major.devsolver_backend.entity.Post;
 import com.major.devsolver_backend.entity.User;
+import com.major.devsolver_backend.exception.FileUploadException;
 import com.major.devsolver_backend.exception.NotFoundException;
 import com.major.devsolver_backend.repository.PostRepository;
 import com.major.devsolver_backend.repository.UserRepository;
@@ -14,8 +15,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -73,6 +82,38 @@ public class UserService {
                 .map(this::mapToPostResponse);
     }
 
+    public String uploadAvatar(MultipartFile file) {
+
+        try {
+            if (file.isEmpty()) throw new FileUploadException("File is empty");
+
+            String ext = Optional.ofNullable(file.getOriginalFilename())
+                    .filter(name -> name.contains("."))
+                    .map(name -> name.substring(name.lastIndexOf(".")))
+                    .orElse(".png");
+
+            String filename = UUID.randomUUID() + ext;
+
+            Path uploadDir = Paths.get("uploads/avatars");
+            Files.createDirectories(uploadDir);
+
+            Path filePath = uploadDir.resolve(filename);
+
+            try (InputStream in = file.getInputStream()) {
+                Files.copy(in, filePath, StandardCopyOption.REPLACE_EXISTING);
+            }
+
+            User user = getAuthenticatedUser();
+            user.setAvatarUrl("/uploads/avatars/" + filename);
+            userRepository.save(user);
+
+            return user.getAvatarUrl();
+
+        } catch (IOException e) {
+            throw new FileUploadException("Failed to upload avatar");
+        }
+    }
+
     //---------- helpers ---------------
     private UserResponse mapToUserResponse(User user){
 
@@ -84,7 +125,7 @@ public class UserService {
                 .build();
     }
 
-    private PostResponse mapToPostResponse(Post post){
+    private PostResponse mapToPostResponse(Post post) {
 
         return PostResponse.builder()
                 .id(post.getId())
