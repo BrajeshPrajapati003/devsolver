@@ -26,7 +26,12 @@ spring:
 
   web:
     resources:
-      static-locations: file:uploads/
+      static-locations: file:uploads/ # configure static file access
+
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB # configure multipart limits
 
   security:
     user:

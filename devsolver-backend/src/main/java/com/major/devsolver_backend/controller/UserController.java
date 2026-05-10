@@ -68,9 +68,9 @@ public class UserController {
         return ResponseEntity.ok(userService.getMyPosts(pageable));
     }
 
-    // Avatar
-    @PostMapping("/me/avatar")
-    public ResponseEntity<String> uploadAvatar(@RequestParam("file") MultipartFile file){
-        return ResponseEntity.ok(userService.updateAvatar(file));
-    }
+//    // Avatar
+//    @PostMapping("/me/avatar")
+//    public ResponseEntity<String> uploadAvatar(@RequestParam("file") MultipartFile file){
+//        return ResponseEntity.ok(userService.updateAvatar(file));
+//    }
 }

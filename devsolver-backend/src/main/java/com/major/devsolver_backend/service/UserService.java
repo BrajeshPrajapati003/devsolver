@@ -96,7 +96,6 @@ public class UserService {
 
             Path uploadDir = Paths.get("uploads/avatars");
             Files.createDirectories(uploadDir);
-
             Path filePath = uploadDir.resolve(filename);
 
             try (InputStream in = file.getInputStream()) {
