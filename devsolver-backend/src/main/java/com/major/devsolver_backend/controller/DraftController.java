@@ -4,6 +4,7 @@ import com.major.devsolver_backend.dto.DraftRequest;
 import com.major.devsolver_backend.dto.DraftResponse;
 import com.major.devsolver_backend.dto.PostResponse;
 import com.major.devsolver_backend.service.DraftService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class DraftController {
     // Autosave draft
     @PutMapping("/autosave")
     public ResponseEntity<DraftResponse> autosave(
-            @RequestBody DraftRequest dto
+            @Valid @RequestBody DraftRequest dto
             ){
         return ResponseEntity.ok(draftService.autosave(dto));
     }
