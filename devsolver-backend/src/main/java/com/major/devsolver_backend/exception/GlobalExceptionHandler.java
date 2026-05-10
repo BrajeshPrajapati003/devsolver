@@ -1,9 +1,11 @@
 package com.major.devsolver_backend.exception;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
@@ -50,10 +52,25 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleGeneral(Exception ex){
 
-        ex.printStackTrace();
         return ResponseEntity.status(500).body(
                 Map.of("error", "Something went wrong")
         );
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleValidation(MethodArgumentNotValidException ex){
+
+        Map<String, String> errors = new HashMap<>();
+
+        ex.getBindingResult()
+                .getFieldErrors()
+                .forEach(error -> errors.put(
+                        error.getField(),
+                        error.getDefaultMessage()
+                        )
+                );
+
+        return ResponseEntity.badRequest().body(errors);
     }
 
 //    @ExceptionHandler(Exception.class)
