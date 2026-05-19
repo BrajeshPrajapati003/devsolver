@@ -1,13 +1,11 @@
 package com.major.devsolver_backend.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@Data @Builder
+@Getter @Setter
+@Builder
 @NoArgsConstructor @AllArgsConstructor
 @Table(
         uniqueConstraints =

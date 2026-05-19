@@ -3,16 +3,11 @@ package com.major.devsolver_backend.dto;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.Instant;
 import java.util.Set;
 
-@Builder
 @Data
-public class DraftResponse{
+@Builder
+public class AiTagResponse {
 
-    Long id;
-    String title;
-    String content;
     Set<String> tags;
-    Instant updatedAt;
 }

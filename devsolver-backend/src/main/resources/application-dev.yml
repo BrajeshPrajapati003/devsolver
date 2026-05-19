@@ -7,16 +7,22 @@ spring:
         ansi:
             enabled: always
     datasource:
+        url: ${DB_URL:jdbc:postgresql://localhost:5432/devsolver_db}
+        username: ${DB_USER:devsolver_user}
+        password: ${DB_PASS:devsolver_pass}
 #        url: ${DB_URL:jdbc:postgresql://localhost:5432/devsolver_db}
-#        username: ${DB_USER:devsolver_user}
-#        password: ${DB_PASS:devsolver_pass}
-        url: jdbc:postgresql://localhost:5432/devsolver_db
-        username: devsolver_user
-        password: devsolver_pass
-
+#        username: devsolver_user
+#        password: devsolver_pass
     jpa:
         hibernate:
             ddl-auto: update
         show-sql: true
+    ai:
+      openai:
+        api-key: ${AI_API_KEY}
+        base-url: ${AI_BASE_URL:https://generativelanguage.googleapis.com/v1beta/openai}
+        chat:
+          options:
+            model: gemini-2.0-flash
 
 debug: true
