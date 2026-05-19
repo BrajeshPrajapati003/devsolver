@@ -48,4 +48,25 @@ public class AiService {
                 .build();
     }
 
+    /**
+     * AI Summary
+     */
+    public String generatePostSummary(String content){
+
+        String prompt = """
+                Summarize the following developer post in 1-2 concise sentences.
+                
+                Rules:
+                - Keep it technical
+                - Keep it short
+                - No markdown
+                - No bullet points
+                
+                Content:
+                """ + content;
+
+        return chatClientBuilder.build().prompt()
+                .user(prompt)
+                .call().content();
+    }
 }

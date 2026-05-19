@@ -1,7 +1,9 @@
 package com.major.devsolver_backend.controller;
 
+import com.major.devsolver_backend.dto.DownloadFile;
 import com.major.devsolver_backend.dto.PostRequest;
 import com.major.devsolver_backend.dto.PostResponse;
+import com.major.devsolver_backend.service.PostDownloadService;
 import com.major.devsolver_backend.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class PostController {
 
     private final PostService postService;
+    private final PostDownloadService postDownloadService;
 
     // create
     @PostMapping
@@ -71,4 +75,21 @@ public class PostController {
         return ResponseEntity.ok("Post deleted successfully!");
     }
 
+    // Download post
+    @GetMapping("/{id}/download")
+    public ResponseEntity<byte[]> downloadPost(
+            @PathVariable Long id
+    ){
+        DownloadFile file = postDownloadService.downloadMarkdown(id);
+
+        return ResponseEntity.ok()
+                .header(
+                        HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=" + file.filename()
+                )
+                .contentType(file.mediaType())
+                .body(file.content());
+    }
+
+    // downloadPDF(), downloadHTML(), downloadDocx() -->> later in ExportService
 }

@@ -17,4 +17,6 @@ public class PostResponse {
 
     private Long upvotes;
     private Long downvotes;
+
+    private String aiSummary;
 }
