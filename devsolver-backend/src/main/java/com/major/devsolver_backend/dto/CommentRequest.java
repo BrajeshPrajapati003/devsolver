@@ -10,3 +10,13 @@ public record CommentRequest(
         String content
 ) {
 }
+
+/*
+REQUEST -> simple immutable input
+RESPONSE -> gradually assembled output
+
+- keep request DTOs as records always
+- use records for simple response DTOs (like LoginResponse, AiTagResponse, UploadResponse)
+- use builder classes for LARGE/COMPLEX responses (like PostDetailResponse, FeedResponse, AnalyticsResponse)
+    because builder improves readability
+ */

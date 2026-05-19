@@ -3,10 +3,10 @@ package com.major.devsolver_backend.entity;
 import com.major.devsolver_backend.entity.enums.VoteType;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
 @Entity
-@Builder @Data
+@Builder
+@Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 @Table(
         uniqueConstraints = @UniqueConstraint(columnNames = {

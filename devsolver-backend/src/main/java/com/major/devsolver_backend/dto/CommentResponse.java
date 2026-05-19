@@ -18,3 +18,11 @@ public class CommentResponse {
     private Long postId;
 
 }
+
+/*
+- Records become painful if the ResponseDTOs are huge
+- Builder becomes much cleaner
+
+Request and Response both should be treated as IMMUTABLE API CONTRACTS
+hence both should be record instead of Builder Classes.
+ */

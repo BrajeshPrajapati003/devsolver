@@ -3,8 +3,12 @@ package com.major.devsolver_backend.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
-@Data @Builder
+@Getter @Setter
+@Builder
 @NoArgsConstructor @AllArgsConstructor
 public class Tag {
 
@@ -12,6 +16,9 @@ public class Tag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String name;
+
+    @ManyToMany(mappedBy = "tags")
+    private Set<Post> posts = new HashSet<>();
 }

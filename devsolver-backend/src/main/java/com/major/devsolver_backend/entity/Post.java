@@ -27,7 +27,7 @@ public class Post {
 
     @ManyToMany
     @JoinTable(
-            name = "post_tag",
+            name = "post_tags",
             joinColumns = @JoinColumn(name = "post_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
@@ -41,4 +41,7 @@ public class Post {
     void onCreate(){
         this.createdAt = Instant.now();
     }
+
+    @Column(columnDefinition = "TEXT")
+    private String aiSummary;
 }

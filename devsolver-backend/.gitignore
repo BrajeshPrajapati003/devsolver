@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Environment
 .env
 .env.*
@@ -27,6 +28,12 @@ Thumbs.db
 
 
 
+=======
+.env
+*.env
+.env.*
+
+>>>>>>> 63494a9390f2a9055656bc1d7f5e21e9b5130eeb
 HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar

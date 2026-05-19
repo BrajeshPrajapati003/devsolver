@@ -14,12 +14,12 @@ import com.major.devsolver_backend.repository.VoteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
+import java.nio.charset.StandardCharsets;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -30,14 +30,22 @@ public class PostService {
     private final PostRepository postRepository;
     private final VoteRepository voteRepository;
     private final TagRepository tagRepository;
+    private final AiService aiService;
 
     // Create post
     public PostResponse createPost(PostRequest dto){
 
         User user = getAuthenticatedUser();
 
-        Set<Tag> tags = dto.tags() == null ? new HashSet<>() :
-                dto.tags().stream()
+        Set<String> finalTags = dto.tags();
+
+        // AI Fallback if user gives no tags
+        if(finalTags == null || finalTags.isEmpty()){
+
+            finalTags = aiService.suggestTags(dto.content()).getTags();
+        }
+
+        Set<Tag> tags = finalTags.stream()
                         .map(tagName -> {
                             String normalized = tagName.toLowerCase().trim(); // normalize tags (JAVA = java = JaVa)
 
@@ -48,11 +56,16 @@ public class PostService {
                         })
                         .collect(Collectors.toSet());
 
+        // AI Summary
+        String summary = aiService.generatePostSummary(dto.content());
+
+        // Create Post
         Post post = Post.builder()
                 .title(dto.title())
                 .content(dto.content())
                 .user(user)
                 .tags(tags)
+                .aiSummary(summary)
                 .build();
         Post savedPost = postRepository.save(post);
 
@@ -97,6 +110,8 @@ public class PostService {
 
             post.setTags(tags);
         }
+
+        post.setAiSummary(aiService.generatePostSummary(dto.content()));
 
         Post updatedPost = postRepository.save(post);
 
@@ -172,7 +187,8 @@ public class PostService {
                 .author(post.getUser().getUsername())
                 .upvotes(upvotes)
                 .downvotes(downvotes)
-                 .tags(tagNames)
+                .tags(tagNames)
+                .aiSummary(post.getAiSummary())
                 .build();
     }
 

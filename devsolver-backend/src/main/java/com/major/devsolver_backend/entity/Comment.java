@@ -3,9 +3,7 @@ package com.major.devsolver_backend.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter @Setter
