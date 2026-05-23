@@ -1,69 +1,25 @@
-<<<<<<< HEAD
-# Environment
-.env
-.env.*
-
-# Uploads
-uploads/
-
 # IntelliJ
 .idea/
 *.iml
 
-# VS Code
+# VSCode
 .vscode/
 
-# Maven
-target/
-
-# Gradle
-build/
+# OS
+.DS_Store
+Thumbs.db
 
 # Logs
 *.log
 
-# OS files
-.DS_Store
-Thumbs.db
-
-
-
-=======
+# Environment
 .env
-*.env
 .env.*
 
->>>>>>> 63494a9390f2a9055656bc1d7f5e21e9b5130eeb
-HELP.md
+# Build
 target/
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
-
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
-.idea/
-*.iws
-*.iml
-*.ipr
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
+dist/
 build/
-!**/src/main/**/build/
-!**/src/test/**/build/
 
-### VS Code ###
-.vscode/
+# Node
+node_modules/
