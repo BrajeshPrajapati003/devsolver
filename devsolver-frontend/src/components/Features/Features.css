@@ -1,0 +1,58 @@
+.features {
+  padding: 100px 0;
+  background-color: #020617;
+}
+
+.features-container {
+  width: 90%;
+  max-width: 1200px;
+  margin: auto;
+  text-align: center;
+}
+
+.features-title {
+  font-size: 2.4rem;
+  color: #E5E7EB;
+  margin-bottom: 60px;
+}
+
+.features-title span {
+  color: #38BDF8;
+}
+
+/* Grid */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+/* Card */
+.feature-card {
+  background-color: #0F172A;
+  border: 1px solid #1E293B;
+  border-radius: 12px;
+  padding: 30px 20px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-6px);
+  border-color: #38BDF8;
+}
+
+.feature-icon {
+  font-size: 2rem;
+  margin-bottom: 16px;
+}
+
+.feature-card h3 {
+  color: #E5E7EB;
+  margin-bottom: 10px;
+}
+
+.feature-card p {
+  color: #94A3B8;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
