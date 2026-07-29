@@ -1,4 +1,5 @@
 import "./Landing.css";
+import Button from "../../components/ui/Button/Button";
 
 function Landing() {
   return (
@@ -10,8 +11,12 @@ function Landing() {
         </div>
 
         <div className="nav-buttons">
-          <button className="btn btn-secondary">Sign In</button>
-          <button className="btn btn-primary">Get Started</button>
+          <Button variant="secondary">
+             Sign In
+          </Button>
+          <Button variant="primary">
+              Get Started
+          </Button>
         </div>
       </header>
 
@@ -34,8 +39,12 @@ function Landing() {
           </p>
 
           <div className="hero-buttons">
-            <button className="btn btn-primary">Create Account</button>
-            <button className="btn btn-outline">Explore Blogs</button>
+            <Button variant="primary">
+              Get Started
+            </Button>
+            <Button variant="outline">
+              Explore Blogs
+            </Button>
           </div>
         </div>
 
