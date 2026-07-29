@@ -1,11 +1,18 @@
-import { Routes, Route } from "react-router-dom";
-import Landing from "./pages/Landing/Landing";
+import Button from "./components/ui/Button/Button";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Landing />} />
-    </Routes>
+    <div
+      className="container"
+      style={{
+        paddingTop: "80px",
+        display: "flex",
+        gap: "20px",
+      }}
+    >
+      <Button text="Login" />
+      <Button text="Sign Up" variant="outline" />
+    </div>
   );
 }
 

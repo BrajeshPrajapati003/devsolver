@@ -1,22 +1,20 @@
 import "./Button.css";
 
-function Button({
-  children,
-  variant = "primary",
-  type = "button",
+const Button = ({
+  text,
   onClick,
-  disabled = false,
-}) {
+  type = "button",
+  variant = "primary",
+}) => {
   return (
     <button
       type={type}
       className={`btn btn-${variant}`}
       onClick={onClick}
-      disabled={disabled}
     >
-      {children}
+      {text}
     </button>
   );
-}
+};
 
 export default Button;

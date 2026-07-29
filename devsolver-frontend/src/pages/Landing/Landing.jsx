@@ -1,14 +1,12 @@
 import "./Landing.css";
 import Button from "../../components/ui/Button/Button";
+import Logo from "../../components/ui/Logo/Logo";
 
 function Landing() {
   return (
     <div className="landing">
       <header className="landing-navbar">
-        <div className="logo">
-          <span className="logo-highlight">&lt;/&gt;</span>
-          <h2>DevSolver</h2>
-        </div>
+        <Logo />
 
         <div className="nav-buttons">
           <Button variant="secondary">

@@ -1,74 +1,30 @@
-/* ==========================
-   Base Button
-========================== */
-
 .btn {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-
-  padding: 12px 24px;
-
   border: none;
   outline: none;
-
-  border-radius: var(--radius-md);
-
+  cursor: pointer;
+  padding: 12px 28px;
+  border-radius: var(--radius-sm);
   font-size: 1rem;
   font-weight: 600;
-
-  cursor: pointer;
-
   transition: var(--transition);
 }
 
-/* ==========================
-   Disabled State
-========================== */
-
-.btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* ==========================
-   Primary Button
-========================== */
-
 .btn-primary {
-  background: var(--primary);
-  color: var(--text-primary);
+  background: var(--accent);
+  color: white;
 }
 
-.btn-primary:hover:not(:disabled) {
-  background: var(--primary-hover);
+.btn-primary:hover {
+  background: var(--accent-hover);
 }
-
-/* ==========================
-   Secondary Button
-========================== */
-
-.btn-secondary {
-  background: transparent;
-  color: var(--text-secondary);
-}
-
-.btn-secondary:hover:not(:disabled) {
-  color: var(--text-primary);
-}
-
-/* ==========================
-   Outline Button
-========================== */
 
 .btn-outline {
   background: transparent;
-  color: var(--text-primary);
-
-  border: 1px solid var(--border);
+  border: 2px solid var(--accent);
+  color: var(--accent);
 }
 
-.btn-outline:hover:not(:disabled) {
-  border-color: var(--primary);
-  color: var(--primary);
+.btn-outline:hover {
+  background: var(--accent);
+  color: white;
 }
