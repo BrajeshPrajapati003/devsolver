@@ -173,3 +173,32 @@
 .boolean{
     color:#569cd6;
 }
+
+@media (max-width: 992px) {
+
+    .hero-container {
+        gap: 50px;
+    }
+
+}
+
+/* -------------------------------- */
+/* Mobile */
+
+@media (max-width: 768px) {
+
+    .hero-container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .hero-buttons {
+        justify-content: center;
+    }
+
+    .editor {
+        width: 100%;
+        max-width: 520px;
+    }
+
+}

@@ -100,3 +100,15 @@
     line-height:1.8;
 
 }
+
+/* Desktop styles */
+
+/* ... */
+
+@media (max-width:768px){
+
+    .feature-grid{
+        grid-template-columns:1fr;
+    }
+
+}

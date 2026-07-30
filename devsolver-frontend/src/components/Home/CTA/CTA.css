@@ -112,3 +112,19 @@
     right:-40px;
 
 }
+
+@media(max-width:768px){
+
+.cta-card{
+
+padding:50px 25px;
+
+}
+
+.cta h2{
+
+font-size:2.2rem;
+
+}
+
+}
