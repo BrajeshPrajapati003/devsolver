@@ -4,6 +4,7 @@ import Features from "../../components/Home/Features/Features";
 import HowItWorks from "../../components/Home/HowItWorks/HowItWorks";
 import Stats from "../../components/Home/Stats/Stats";
 import CTA from "../../components/Home/CTA/CTA";
+import Footer from "../../components/layout/Footer/Footer";
 
 const Home = () => {
   return (
@@ -14,6 +15,7 @@ const Home = () => {
       <HowItWorks />
       <Stats />
       <CTA />
+      <Footer />
     </>
   );
 };
