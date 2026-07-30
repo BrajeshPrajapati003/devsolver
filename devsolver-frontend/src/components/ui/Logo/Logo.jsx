@@ -1,21 +1,13 @@
+import { Link } from "react-router-dom";
 import "./Logo.css";
 
-function Logo({ compact = false }) {
+const Logo = () => {
   return (
-    <div className="logo">
-      <div className="logo-box">
-        <span className="logo-d">D</span>
-        <span className="logo-s">S</span>
-      </div>
-
-      {!compact && (
-        <div className="logo-text">
-          <h2>DevSolver</h2>
-          <p>Developer Community</p>
-        </div>
-      )}
-    </div>
+    <Link to="/" className="logo">
+      <span className="logo-highlight">&lt;/&gt;</span>
+      <span className="logo-text">DevSolver</span>
+    </Link>
   );
-}
+};
 
 export default Logo;

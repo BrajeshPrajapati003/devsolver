@@ -1,57 +1,17 @@
-.logo{
-    display:flex;
-    align-items:center;
-    gap:14px;
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  text-decoration: none;
+  font-size: 1.7rem;
+  font-weight: 700;
 }
 
-.logo-box{
-
-    width:52px;
-    height:52px;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    background:var(--primary);
-
-    border-radius:14px;
-
-    font-weight:bold;
-
-    letter-spacing:-2px;
-
-    box-shadow:var(--shadow-md);
-
+.logo-highlight {
+  color: var(--accent);
 }
 
-.logo-d{
-
-    color:white;
-    font-size:1.4rem;
-
-}
-
-.logo-s{
-
-    color:#dbeafe;
-
-    font-size:1.1rem;
-
-}
-
-.logo-text h2{
-
-    font-size:1.55rem;
-
-    color:var(--text-primary);
-
-}
-
-.logo-text p{
-
-    color:var(--text-secondary);
-
-    font-size:.82rem;
-
+.logo-text {
+  color: var(--text-primary);
 }
