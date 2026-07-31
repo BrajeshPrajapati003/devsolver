@@ -1,0 +1,21 @@
+.avatar{
+
+    width:46px;
+
+    height:46px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:var(--accent);
+
+    color:white;
+
+    font-weight:700;
+
+}

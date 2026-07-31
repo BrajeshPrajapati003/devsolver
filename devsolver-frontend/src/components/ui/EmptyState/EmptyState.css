@@ -1,0 +1,19 @@
+.empty-state{
+
+    text-align:center;
+
+    padding:80px 20px;
+
+}
+
+.empty-state h2{
+
+    margin-bottom:16px;
+
+}
+
+.empty-state p{
+
+    color:var(--text-secondary);
+
+}
