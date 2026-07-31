@@ -1,16 +1,7 @@
 import { useEffect, useState } from "react";
 import "./AuthFlow.css";
 
-const steps = [
-  "👤 User",
-  "🔐 Login Request",
-  "☕ Spring Boot API",
-  "🛡 Spring Security",
-  "🎫 JWT Token",
-  "✅ Authenticated",
-];
-
-const AuthFlow = () => {
+const AuthFlow = ({ title = "Authentication Flow", steps = [] }) => {
   const [active, setActive] = useState(0);
 
   useEffect(() => {
@@ -19,27 +10,45 @@ const AuthFlow = () => {
     }, 900);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [steps.length]);
 
   return (
     <div className="auth-flow">
-      <h2>Authentication Flow</h2>
+
+      <h2>{title}</h2>
 
       <div className="flow-container">
+
         {steps.map((step, index) => (
+
           <div key={index} className="flow-item">
-            <div className={`flow-box ${active === index ? "active" : ""}`}>
+
+            <div
+              className={`flow-box ${
+                active === index ? "active" : ""
+              }`}
+            >
               {step}
             </div>
 
             {index !== steps.length - 1 && (
-              <div className={`flow-arrow ${active === index ? "active-arrow" : ""}`}>
+              <div
+                className={`flow-arrow ${
+                  active === index
+                    ? "active-arrow"
+                    : ""
+                }`}
+              >
                 ↓
               </div>
             )}
+
           </div>
+
         ))}
+
       </div>
+
     </div>
   );
 };

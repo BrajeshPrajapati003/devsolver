@@ -56,7 +56,17 @@ const Login = () => {
         {/* RIGHT */}
 
         <div className="login-right">
-          <AuthFlow />
+          <AuthFlow
+            title="Authentication Flow"
+            steps={[
+              "👤 User",
+              "🔐 Login Request",
+              "☕ Spring Boot API",
+              "🛡 Spring Security",
+              "🎫 JWT Token",
+              "✅ Authenticated"
+            ]}
+          />
         </div>
 
       </div>
