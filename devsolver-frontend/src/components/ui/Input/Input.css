@@ -1,0 +1,47 @@
+.input-group{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-bottom:22px;
+}
+
+.input-group label{
+    font-weight:600;
+    color:var(--text-primary);
+}
+
+.input-group input{
+
+    width:100%;
+
+    padding:14px 16px;
+
+    border:1px solid var(--border-color);
+
+    border-radius:10px;
+
+    background:var(--bg-secondary);
+
+    color:var(--text-primary);
+
+    font-size:1rem;
+
+    transition:.3s;
+
+}
+
+.input-group input:focus{
+
+    outline:none;
+
+    border-color:var(--accent);
+
+    box-shadow:0 0 0 4px rgba(59,130,246,.15);
+
+}
+
+.input-group input::placeholder{
+
+    color:var(--text-secondary);
+
+}
